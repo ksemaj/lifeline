@@ -1,0 +1,55 @@
+name: Lifeline
+version: '${version}'
+main: dev.nora.lifeline.LifelinePlugin
+# 26.2 so it also loads on the current Folia beta; newer servers accept older api-versions.
+api-version: '26.2'
+folia-supported: true
+description: Every life is tied together. If one player dies, everyone dies.
+authors: [Nora]
+
+commands:
+  lifeline:
+    description: Lifeline commands.
+    usage: /lifeline <status|list|rules|settings|stats|timer|optout|optin|start|stop|add|remove|sharing|compass|reset|resetstats|reload> [player]
+    aliases: [fate, ll]
+  timer:
+    description: How long the current attempt has been going.
+    usage: /timer
+    permission: lifeline.use
+  stats:
+    description: Stats for the last run and past attempts.
+    usage: /stats
+    permission: lifeline.use
+  coords:
+    description: Post your coordinates in chat for everyone.
+    usage: /coords
+    permission: lifeline.use
+  tpa:
+    description: Ask to teleport to a player (one per run, if the server allows it).
+    usage: /tpa <player>
+    permission: lifeline.use
+  tpaccept:
+    description: Accept a teleport request.
+    usage: /tpaccept [player]
+    permission: lifeline.use
+  tpdeny:
+    description: Deny a teleport request.
+    usage: /tpdeny [player]
+    permission: lifeline.use
+
+permissions:
+  lifeline.use:
+    description: Use status, list, rules, stats, timer, /coords, /tpa and your own settings.
+    default: true
+  lifeline.toggle:
+    description: Opt yourself out of / back into runs (between runs only).
+    default: true
+  lifeline.afk.exempt:
+    description: Never kicked for being AFK.
+    default: false
+  lifeline.admin:
+    description: Start/stop runs, open settings, manage other players, reset the world.
+    default: op
+    children:
+      lifeline.use: true
+      lifeline.toggle: true

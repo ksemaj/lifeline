@@ -1,0 +1,271 @@
+# Used by Lifeline to update old configs. Don't change it.
+config-version: 4
+
+# ─────────────────────────────────────────────
+#  Lifeline — if one player dies, everyone dies.
+#  Messages use MiniMessage: https://docs.advntr.dev/minimessage/format
+# ─────────────────────────────────────────────
+
+# Only players in these game modes are part of the link (creative/spectator are left alone).
+affected-gamemodes: [SURVIVAL, ADVENTURE]
+
+cascade:
+  # Ticks to wait after the first death before everyone else falls (20 ticks = 1 second).
+  delay-ticks: 10
+  # Harmless lightning effect on every player who falls with them.
+  lightning-effect: true
+  # Deaths within this many seconds of a cascade don't start another one.
+  cooldown-seconds: 5
+  # After a wipe, start the next attempt straight away with the same players (false = wait for
+  # /lifeline start). A new world (world-reset) always waits for /lifeline start.
+  auto-continue: true
+
+# Who plays: everyone online and not opted out when an admin runs /lifeline start. Opting in or
+# out only works between runs. Admins can change a running roster with /lifeline add|remove.
+# Someone who joins after the start: SPECTATE (watch this run, play the next) or BLOCK (can't
+# join until the run ends; ops always can).
+late-joiners: SPECTATE
+
+low-health:
+  # Health points (2 points = 1 heart). At or below this, everyone gets an action bar warning.
+  warn-at: 6.0
+  # At or below this the warning turns red and pulses.
+  critical-at: 3.0
+  # How often (in ticks) each player's health is checked and the action bar refreshed.
+  check-interval-ticks: 10
+  # Play a heartbeat sound to everyone when somebody new drops low.
+  alert-sound: true
+  # On/off switches in this file are only defaults: change them in-game with /lifeline settings,
+  # which saves to data.yml. Each player can also hide warnings, arrows and the heartbeat for
+  # themselves under My settings.
+  # Show an arrow and distance to each player in danger on the action bar.
+  compass: true
+  # Also point real compass items at the nearest player in danger (reset to spawn afterwards).
+  compass-item: true
+
+damage-sharing:
+  # Default for new servers. After that, /lifeline sharing on|off|<percent> changes it and it is saved.
+  enabled: false
+  # Share of each hit that every other linked player also takes (0.25 = a quarter).
+  fraction: 0.25
+
+protection:
+  # Logging out during a run while in combat or on critical health counts as dying (and wipes
+  # everyone). Being kicked never counts.
+  combat-log: true
+  # How long after a hit someone counts as "in combat".
+  combat-seconds: 10
+  # No penalty for this long after dying, respawning, joining or a wipe.
+  grace-seconds: 30
+
+afk:
+  # Mark idle players AFK (shown in the tab list). The timer pauses when everyone is AFK.
+  flag: true
+  flag-minutes: 5
+  # Kick players idle this long while a run is going. Permission lifeline.afk.exempt skips it.
+  kick: true
+  kick-minutes: 15
+  # Hostile mobs ignore players who are AFK (and drop them as a target when they go AFK).
+  mobs-ignore: true
+
+# One /tpa per player per run; the other player clicks [Accept] or [Deny]. Off by default.
+tpa:
+  enabled: false
+
+# /coords posts your coordinates in chat for everyone (10 second cooldown).
+coords:
+  enabled: true
+
+world-reset:
+  # After a wipe: kick everyone, shut down, and come back on a brand-new world.
+  # On hardcore servers this defaults to on (everyone is a spectator after a wipe otherwise).
+  # The server only restarts by itself if it runs in a restart loop (start.sh / start.bat).
+  enabled: false
+  # Seconds after the wipe summary before the countdown starts, and the countdown length.
+  delay-seconds: 8
+  countdown-seconds: 3
+  # Put a random seed in server.properties so each attempt gets a different world.
+  new-seed: true
+  # Old worlds are moved to world-backups/ and the newest ones kept. 0 = delete them outright.
+  keep-backups: 2
+
+victory:
+  # What wins a run: DRAGON, WITHER, EITHER or NONE (endless). Changeable in /lifeline settings.
+  goal: DRAGON
+
+tab-list:
+  # Name, afk, hearts, and the dimension when not in the overworld. Attempt and timer on top.
+  enabled: true
+
+# "afk" and hearts next to names above heads (scoreboard teams). Paper only: Folia has no
+# scoreboard API. Players already on another plugin's team are left alone.
+nametag:
+  enabled: true
+
+stats:
+  # After every wipe or win: a results bar across the top of the screen (works on the hardcore
+  # game-over screen and in spectator) plus a short chat card; /stats shows the full breakdown.
+  enabled: true
+  # How long the results bar stays up.
+  bar-seconds: 90
+  # Ticks after the wipe before the summary appears.
+  summary-delay-ticks: 60
+  # How many past wipes to keep.
+  history-size: 20
+
+opt-out:
+  # Seconds a player must wait between changing their own opt status.
+  cooldown-seconds: 30
+
+sounds:
+  victory: "ui.toast.challenge_complete"
+  countdown: "block.note_block.hat"
+  start: "entity.ender_dragon.growl"
+  cascade: "entity.wither.spawn"
+  low-health: "block.note_block.basedrum"
+  opt-in: "block.respawn_anchor.charge"
+  opt-out: "block.respawn_anchor.deplete"
+
+messages:
+  # MiniMessage format: https://docs.advntr.dev/minimessage/format
+  prefix: "<#e05555>❤</#e05555> "
+  join-waiting: "<gray>The run hasn't started. An admin starts it with <white>/lifeline start</white>."
+  join: "<gray>Your life is tied to <white><count></white> other player(s)."
+  join-opted-out: "<gray>You opted out, so you're not tied to anyone this run."
+  join-late: "<gray>This run started without you, so you're watching. You'll play the next one."
+  late-join-blocked: "<#e05555>Lifeline</#e05555><newline><gray>Attempt <attempt> is in progress.<newline><gray>You can join once it ends."
+  rules-join: "<gray>Logging out: <logout> <dark_gray>· /lifeline rules"
+  rules-logout-safe: "<white>safe</white>"
+  rules-logout-deadly: "<#e05555>counts as dying if in combat or on critical health</#e05555>"
+  rules-header: "<white>Server rules</white> <dark_gray>(set by admins, same for everyone)"
+  rules-line: "<dark_gray>  · <gray><text>"
+  rules-footer: "<dark_gray>  Your own display options: /lifeline settings"
+  rule-changed: "<white><admin></white> <gray>changed a server rule:</gray> <white><rule></white> <gray>→</gray> <white><value></white>"
+  rule-explain: "<dark_gray>  <text>"
+  setting-changed: "<gray>Server display:</gray> <white><setting></white> <state>"
+  pref-changed: "<gray>Your setting:</gray> <white><setting></white> <state> <dark_gray>(only you)"
+  optout-locked: "<gray>You can only opt out between runs. This one ends with a wipe, a win or a reset."
+  optin-locked: "<gray>You can only opt in between runs. An admin can add you with <white>/lifeline add</white>."
+  add-usage: "<gray>/lifeline add <player>"
+  remove-usage: "<gray>/lifeline remove <player>"
+  roster-no-run: "<gray>No run is going. Everyone online joins when it starts."
+  roster-added: "<white><player></white> <gray>was added to this run."
+  roster-removed: "<white><player></white> <gray>was taken out of this run."
+  roster-already-in: "<white><player></white> <gray>is already in this run."
+  roster-not-in: "<white><player></white> <gray>isn't in this run."
+  coords: "<player> <gray>is at</gray> <white><x> <y> <z></white> <dark_gray>· <dimension>"
+  coords-off: "<gray>/coords is turned off on this server."
+  tpa-off: "<gray>/tpa is turned off on this server."
+  tpa-not-running: "<gray>/tpa works during a run, for players in it."
+  tpa-usage: "<gray>/tpa <player> <dark_gray>· you get one per run"
+  tpa-used: "<gray>You've used your teleport for this run."
+  tpa-no-target: "<gray>No player in this run called <white><player></white> is online."
+  tpa-in-combat: "<gray>You can't teleport while in combat."
+  tpa-they-in-combat: "<white><player></white> <gray>is in combat; try again in a moment."
+  tpa-sent: "<gray>Asked <white><player></white> to let you teleport. Expires in 60s."
+  tpa-incoming: "<white><player></white> <gray>wants to teleport to you.</gray> <accept> <deny>"
+  tpa-accept-button: "<green>[Accept]</green>"
+  tpa-deny-button: "<#e05555>[Deny]</#e05555>"
+  tpa-accept-hover: "<gray>Teleport <player> to you"
+  tpa-deny-hover: "<gray>Say no"
+  tpa-none: "<gray>No teleport request to answer."
+  tpa-denied: "<white><player></white> <gray>said no. Your teleport is still unused."
+  tpa-denied-you: "<gray>Denied <white><player></white>."
+  tpa-expired: "<gray>Your request to <white><player></white> expired. Your teleport is still unused."
+  tpa-done: "<gray>Teleported to <white><player></white>. That was your one for this run."
+  tpa-arrived: "<white><player></white> <gray>teleported to you."
+  death-not-started: "<gray><player> died, but the run hasn't started, so nobody else did. Start it with <white>/lifeline start</white>."
+  cascade-title: "<#e05555>☠</#e05555>"
+  cascade-subtitle: "<gray><victim> died. Everyone falls."
+  cascade-broadcast: "<gray><victim> died and took <white><count></white> with them."
+  death-message: "<gray><player> fell with <victim>"
+  shared-death-message: "<gray><player> bled out from <victim>'s wounds"
+  logout-death-message: "<gray><player> logged out to escape"
+  low-health-other: "<#e05555><name> <hearts>❤</#e05555><compass>"
+  low-health-self: "<#e05555>You <hearts>❤</#e05555>"
+  low-health-bar: "<entries>"
+  low-health-separator: "<dark_gray>   "
+  compass: " <gray><arrow> <distance>m"
+  compass-other-world: " <dark_gray><world>"
+  opted-out-self: "<gray>You're no longer tied to anyone."
+  opted-in-self: "<gray>You're tied in again. If one dies, all die."
+  opted-out-other: "<gray>Removed <white><player></white>."
+  opted-in-other: "<gray>Added <white><player></white>."
+  opted-out-by-admin: "<gray>An admin removed you from the run."
+  opted-in-by-admin: "<gray>An admin added you to the run."
+  opt-title-out: "<gray>Untied"
+  opt-title-in: "<#e05555>Tied</#e05555>"
+  already-out: "<gray>You're already out."
+  already-in: "<gray>You're already in."
+  on-cooldown: "<gray>Wait <white><seconds>s</white> before switching again."
+  status: "<gray>Run is <state><gray>. You are <you><gray>. <white><linked></white> tied in online."
+  list-header: "<gray>In (<white><count></white>): <names>"
+  list-out-header: "<gray>Out (<white><count></white>): <names>"
+  enabled: "<gray>The run is on."
+  disabled: "<gray>The run is paused."
+  reloaded: "<gray>Config reloaded."
+  no-permission: "<gray>You can't do that."
+  player-not-found: "<gray>No player called <white><player></white> has played here."
+  players-only: "<gray>Only players can do that. Add a player name to target someone."
+  usage: "<gray>/lifeline status · list · rules · settings · stats · timer · optout · optin · /coords · /tpa<newline><dark_gray>admin: start [now] · stop · add · remove · sharing · compass · reset · resetstats · reload"
+  sharing-on: "<gray>Damage sharing on: <white><percent>%</white> of every hit spreads to everyone."
+  sharing-off: "<gray>Damage sharing off."
+  sharing-status: "<gray>Damage sharing is <state><gray> at <white><percent>%</white>."
+  sharing-invalid: "<gray>Use on, off, or a percent from 1 to 100."
+  compass-on: "<gray>Compass on."
+  compass-off: "<gray>Compass off."
+  stats-reset: "<gray>Stats cleared. Next run is attempt <white>1</white>."
+  stats-current: "<gray>Attempt <white><attempt></white> · <white><time></white> · best <white><best></white> · <white><wipes></white> ended"
+  stats-history-line: "<dark_gray>  <attempt>  <gray><time></gray>  <victim> · <cause>"
+  end-wipe: "<#e05555>☠ Attempt <attempt> is over</#e05555>"
+  end-victory: "<gold>✦ Attempt <attempt> won</gold>"
+  end-time: "<gray>Lasted <white><time></white>"
+  end-time-record: "<gray>Lasted <white><time></white> <gold>· new best</gold>"
+  end-cause: "<gray><victim> <cause>"
+  end-view: "<dark_gray>› <white><u>Full stats</u></white>"
+  victory-title: "<gold>✦</gold>"
+  victory-subtitle: "<gray>The dragon is dead. You won in <white><time></white>."
+  victory-subtitle-wither: "<gray>The Wither is dead. You won in <white><time></white>."
+  countdown: "<white><number>"
+  countdown-subtitle: "<gray>Starting"
+  start-title: "<#e05555>❤</#e05555>"
+  start-subtitle: "<gray>Attempt <white><attempt></white> · if one dies, all die"
+  started: "<gray>Attempt <white><attempt></white> started."
+  stopped: "<gray>Paused at <white><time></white>. <white>/lifeline start</white> resumes."
+  already-started: "<gray>Attempt <white><attempt></white> is already running (<white><time></white>)."
+  not-started: "<gray>The run hasn't started. Use <white>/lifeline start</white>."
+  waiting-for-start: "<gray>The next attempt starts with <white>/lifeline start</white>."
+  timer: "<gray>Attempt <white><attempt></white> · <white><time></white> <dark_gray>· best <best>"
+  timer-paused: "<gray>Attempt <white><attempt></white> · <white><time></white> paused <dark_gray>· best <best>"
+  tab-name: "<white><name></white><afk> <health><dimension>"
+  tab-name-out: "<gray><name></gray><afk> <health><dimension> <dark_gray>· out"
+  tab-name-watching: "<gray><name></gray> <dark_gray>· watching"
+  tag-afk: " <dark_gray>afk</dark_gray>"
+  nametag: "<afk> <health>"
+  tab-header: "<newline><#e05555>❤</#e05555> <white>Lifeline</white><newline><dark_gray>attempt <attempt><newline>"
+  tab-footer: "<newline><gray><time> <dark_gray>·</dark_gray> <linked> tied in<newline>"
+  tab-footer-waiting: "<newline><dark_gray>waiting for /lifeline start<newline>"
+  dimension-nether: " <dark_gray>nether"
+  dimension-end: " <dark_gray>end"
+  afk-flagged: "<dark_gray><player> is afk"
+  afk-back: "<dark_gray><player> is back"
+  afk-kicked: "<dark_gray><player> was kicked for being afk"
+  afk-kick-reason: "<#e05555>Lifeline</#e05555><newline><gray>Kicked for being AFK during a run."
+  logout-combat: "<gray><player> logged out in combat. That counts as dying."
+  logout-low: "<gray><player> logged out on low health. That counts as dying."
+  reset-announce: "<gray>New world in <white><seconds>s</white>. You'll be kicked; rejoin in a minute."
+  reset-title: "<white>New world"
+  reset-subtitle: "<gray><seconds>"
+  reset-kick: "<#e05555>Lifeline</#e05555><newline><gray>Making a new world. Rejoin in a minute."
+  reset-failed: "<gray>World reset failed; the world was left as it was. Check the console."
+  reset-already: "<gray>A world reset is already counting down."
+  reset-confirm: "<gray>This kicks everyone, restarts and replaces the world. <white>/lifeline reset confirm</white> to go ahead."
+  bar-wipe: "<#e05555>☠</#e05555> <white>Attempt <attempt> over</white> <gray>· lasted <time> · <victim> fell first"
+  bar-victory: "<gold>✦</gold> <white>Attempt <attempt> won</white> <gray>· <time>"
+  end-dragon: "<white><victim></white> <gray><cause>"
+  end-taken: "<gray>Taken with them: <white><names></white>"
+  end-player: "<dark_gray>  <white><player></white> · <hearts>❤ taken · <kills> slain"
+  end-total: "<dark_gray>  squad · <hearts>❤ taken · <kills> slain"
+  hardcore-no-reset: "<gray>Hardcore: everyone stays a spectator. Turn on <white>New world after wipe</white> in <white>/lifeline settings</white> or run <white>/lifeline reset confirm</white>."
+  death-during-reset: "<gray><player> died, but a new world is on its way, so nobody else did."
+  death-between-runs: "<gray><player> died between runs, so nobody else did. The next one starts with <white>/lifeline start</white>."
